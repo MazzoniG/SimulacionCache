@@ -1,22 +1,47 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package simulacioncache;
 
 /**
  *
- * @author Guillermo
+ * @author Guillermo E. Mazzoni Juan C. Flores
  */
+import java.util.*;
+import java.io.*;
+import java.util.logging.*;
+
 public class SimulacionCache {
 
-    /**
-     * @param args the command line arguments
-     */
+    static int[] RAM = new int[4096];
+    static int[] Cache = new int[512];
+    static int[] Bloque = new int[8];
+    //static int[] Conjunto = new int[4];
+    static BufferedReader reader;
+
     public static void main(String[] args) {
-        // TODO code application logic here
+
+        try {
+
+            reader = new BufferedReader(new FileReader("./src/datos.txt"));
+            String data = null;
+            int c = 0;
+
+            while ((data = reader.readLine()) != null) {
+                RAM[c] = Integer.parseInt(data);
+                c++;
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(SimulacionCache.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
-    
+
+    //Metodos de Lectura & Escritura
+    int Leer(int i, int tipo) {
+        return i;
+    }
+
+    void Escribir(int i, int tipo) {
+
+    }
+
 }
