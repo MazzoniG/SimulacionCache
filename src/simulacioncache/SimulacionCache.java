@@ -13,7 +13,7 @@ public class SimulacionCache {
     static int[] RAM = new int[4096];
     static int[] Cache = new int[512];
     static int[] Bloque = new int[8];
-    static int[] CacheDirecta = new int[64];
+    static cacheLine[] CacheDirecta = new cacheLine[64];
     static int[] CacheAsociativa = new int[64];
     //static int[] Conjunto = new int[4];
     static BufferedReader reader;
@@ -37,7 +37,7 @@ public class SimulacionCache {
             Logger.getLogger(SimulacionCache.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        System.out.println(CacheDirecta(100));
+        System.out.println("IGNORE" + CacheDirecta(4095));
 
     }
 
@@ -52,6 +52,10 @@ public class SimulacionCache {
 
     static String CacheDirecta(int i) {
 
+        int Etiqueta = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(0, 3));
+        int Palabra = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12),2);
+        int Linea = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(3, 9),2);
+        
         return Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12);
     }
 
