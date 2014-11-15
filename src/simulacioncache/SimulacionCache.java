@@ -141,7 +141,12 @@ public class SimulacionCache {
                 CacheMemoryD[Linea].getPalabra()[Palabra] = v;
             } else {
                 if (CacheMemoryD[Linea].isModify()) {
-                    EscribirCacheDirecta(i, v);
+                    //Modifique aquí porque nos daría recursión infinita.
+                    int count = 0;
+                    for (int j = firstLine; j < firstLine + 8; j++) {
+                        RAM[j]= CacheMemoryD[Linea].getPalabra()[count];
+                        count++;
+                    }
                     CacheDirecta(i);
                     CacheMemoryD[Linea].setValid(true);
                     CacheMemoryD[Linea].setModify(true);
