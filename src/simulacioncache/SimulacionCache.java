@@ -13,7 +13,7 @@ public class SimulacionCache {
     static int[] RAM = new int[4096];
     static int[] Cache = new int[512];
     static int[] Bloque = new int[8];
-    static cacheLine[] CacheDirecta = new cacheLine[64];
+    static cacheLine[] CacheMemoryD = new cacheLine[64];
     static int[] CacheAsociativa = new int[64];
     //static int[] Conjunto = new int[4];
     static BufferedReader reader;
@@ -50,13 +50,34 @@ public class SimulacionCache {
         return i;
     }
 
-    static String CacheDirecta(int i) {
+    static int CacheDirecta(int i) {
 
         int Etiqueta = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(0, 3));
-        int Palabra = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12),2);
-        int Linea = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(3, 9),2);
-        
-        return Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12);
+        int Palabra = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12), 2);
+        int Linea = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(3, 9), 2);
+
+        if (CacheMemoryD[Linea].Valid) {
+            if (Etiqueta == CacheMemoryD[Linea].Etiqueta) {
+                return CacheMemoryD[Linea].recoverWord(Palabra);
+            }
+        } else {
+
+            int Bloque = i / 8;
+            int firstLine = (i / 8) * 8;
+            int count = 0;
+
+            CacheMemoryD[Linea].setEtiqueta(Etiqueta);
+            CacheMemoryD[Linea].setValid(true);
+            CacheMemoryD[Linea].setModify(false);
+
+            for (int j = firstLine; j < firstLine + 8; j++) {
+                CacheMemoryD[Linea].getPalabra()[count] = RAM[j];
+                count++;
+            }
+
+            return CacheMemoryD[Linea].recoverWord(Palabra);
+        }
+        return i;
     }
 
     int CacheAsociativo(int i) {
