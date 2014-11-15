@@ -63,7 +63,7 @@ public class SimulacionCache {
                 if (CacheMemoryD[Linea].isModify()) {
 
                     int Bloque = i / 8;
-                    int firstLine = (i / 8) * 8;
+                    int firstLine = Bloque * 8;
                     int count = 0;
 
                     for (int j = firstLine; j < firstLine + 8; j++) {
@@ -133,7 +133,7 @@ public class SimulacionCache {
         int Linea = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(3, 9), 2);
 
         int Bloque = i / 8;
-        int firstLine = (i / 8) * 8;
+        int firstLine = Bloque * 8;
 
         if (CacheMemoryD[Linea].isValid()) {
             if (Etiqueta == CacheMemoryD[Linea].getEtiqueta()) {
