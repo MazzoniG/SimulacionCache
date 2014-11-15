@@ -59,7 +59,30 @@ public class SimulacionCache {
         if (CacheMemoryD[Linea].Valid) {
             if (Etiqueta == CacheMemoryD[Linea].Etiqueta) {
                 return CacheMemoryD[Linea].recoverWord(Palabra);
+            } else {
+                if (CacheMemoryD[Linea].Modify) {
+                    //Si esta modificado, Usar metodo de escritura
+                    return i;
+                    
+                } else {
+
+                    int Bloque = i / 8;
+                    int firstLine = (i / 8) * 8;
+                    int count = 0;
+
+                    CacheMemoryD[Linea].setEtiqueta(Etiqueta);
+                    CacheMemoryD[Linea].setValid(true);
+                    CacheMemoryD[Linea].setModify(false);
+
+                    for (int j = firstLine; j < firstLine + 8; j++) {
+                        CacheMemoryD[Linea].getPalabra()[count] = RAM[j];
+                        count++;
+                    }
+
+                    return CacheMemoryD[Linea].recoverWord(Palabra);
+                }
             }
+
         } else {
 
             int Bloque = i / 8;
@@ -77,7 +100,7 @@ public class SimulacionCache {
 
             return CacheMemoryD[Linea].recoverWord(Palabra);
         }
-        return i;
+        
     }
 
     int CacheAsociativo(int i) {
