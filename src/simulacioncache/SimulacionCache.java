@@ -56,14 +56,26 @@ public class SimulacionCache {
         int Palabra = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12), 2);
         int Linea = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(3, 9), 2);
 
-        if (CacheMemoryD[Linea].Valid) {
-            if (Etiqueta == CacheMemoryD[Linea].Etiqueta) {
+        if (CacheMemoryD[Linea].isValid()) {
+            if (Etiqueta == CacheMemoryD[Linea].getEtiqueta()) {
                 return CacheMemoryD[Linea].recoverWord(Palabra);
             } else {
-                if (CacheMemoryD[Linea].Modify) {
-                    //Si esta modificado, Usar metodo de escritura
-                    return i;
+                if (CacheMemoryD[Linea].isModify()) {
+
+                    int Bloque = i / 8;
+                    int firstLine = (i / 8) * 8;
+                    int count = 0;
+
+                    for (int j = firstLine; j < firstLine + 8; j++) {
+                        EscribirCacheDirecta(j, CacheMemoryD[Linea].getPalabra()[count]);
+                        count++;
+                    }
                     
+                    CacheMemoryD[Linea].setValid(true);
+                    CacheMemoryD[Linea].setModify(false);
+
+                    return CacheMemoryD[Linea].recoverWord(Palabra);
+
                 } else {
 
                     int Bloque = i / 8;
@@ -100,7 +112,6 @@ public class SimulacionCache {
 
             return CacheMemoryD[Linea].recoverWord(Palabra);
         }
-        
     }
 
     int CacheAsociativo(int i) {
@@ -115,4 +126,38 @@ public class SimulacionCache {
 
     }
 
+    static void EscribirCacheDirecta(int i, int v) {
+
+        int Etiqueta = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(0, 3));
+        int Palabra = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12), 2);
+        int Linea = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(3, 9), 2);
+
+        int Bloque = i / 8;
+        int firstLine = (i / 8) * 8;
+
+        if (CacheMemoryD[Linea].isValid()) {
+            if (Etiqueta == CacheMemoryD[Linea].getEtiqueta()) {
+                CacheMemoryD[Linea].setModify(true);
+                CacheMemoryD[Linea].getPalabra()[Palabra] = v;
+            } else {
+                if (CacheMemoryD[Linea].isModify()) {
+                    EscribirCacheDirecta(i, v);
+                    CacheDirecta(i);
+                    CacheMemoryD[Linea].setValid(true);
+                    CacheMemoryD[Linea].setModify(true);
+                    CacheMemoryD[Linea].getPalabra()[Palabra] = v;
+                } else {
+                    CacheMemoryD[Linea].setModify(true);
+                    CacheMemoryD[Linea].getPalabra()[Palabra] = v;
+                }
+            }
+
+        } else {
+            CacheDirecta(i);
+            CacheMemoryD[Linea].setValid(true);
+            CacheMemoryD[Linea].setModify(true);
+            CacheMemoryD[Linea].getPalabra()[Palabra] = v;
+        }
+
+    }
 }
