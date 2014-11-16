@@ -98,7 +98,7 @@ public class SimulacionCache {
         } else {
 
             int Bloque = i / 8;
-            int firstLine = (i / 8) * 8;
+            int firstLine = Bloque * 8;
             int count = 0;
 
             CacheMemoryD[Linea].setEtiqueta(Etiqueta);
@@ -119,22 +119,76 @@ public class SimulacionCache {
         int Etiqueta = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(0, 9));
         int Palabra = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12), 2);
         int Linea = -1;
-
-        for (int k = 0; k < CacheMemoryD.length; k++) {
-            if(!CacheMemoryD[k].isValid()){
-                
-            }
-        }
         
         for (int j = 0; j < CacheMemoryD.length; j++) {
-            if (CacheMemoryD[j].getEtiqueta() == Etiqueta) {
+            if (CacheMemoryD[j].getEtiqueta()==Etiqueta) {
                 Linea = j;
                 break;
-            } else {
-
             }
         }
-        return i;
+        if (Linea == -1) {
+            Random r = new Random();
+            Linea = r.nextInt(64);
+        }
+        
+        if (CacheMemoryD[Linea].isValid()) {
+            if (CacheMemoryD[Linea].getEtiqueta()==Etiqueta) {
+                return CacheMemoryD[Linea].recoverWord(Palabra);
+            }else{
+                if (CacheMemoryD[Linea].isModify()) {
+                    int firstLine = Etiqueta * 8;
+                    int firstLineM = CacheMemoryD[Linea].getEtiqueta()*8;
+                    int count = 0;
+                    
+                    for (int j = firstLineM; j < firstLineM+8; j++) {
+                        RAM[j]= CacheMemoryD[Linea].getPalabra()[count];
+                        count++;
+                    }
+                    
+                    count =0;
+                    for (int j = firstLine; j < firstLine + 8; j++) {
+                        CacheMemoryD[Linea].getPalabra()[count] = RAM[j];
+                        count++;
+                    }
+                    
+                    CacheMemoryD[Linea].setEtiqueta(Etiqueta);
+                    CacheMemoryD[Linea].setValid(true);
+                    CacheMemoryD[Linea].setModify(false);
+                    
+                    return CacheMemoryD[Linea].recoverWord(Palabra);
+                }else{
+                    int firstLine = Etiqueta * 8;
+                    int count = 0;
+                    
+                    
+                    count =0;
+                    for (int j = firstLine; j < firstLine + 8; j++) {
+                        CacheMemoryD[Linea].getPalabra()[count] = RAM[j];
+                        count++;
+                    }
+                    
+                    CacheMemoryD[Linea].setEtiqueta(Etiqueta);
+                    CacheMemoryD[Linea].setValid(true);
+                    CacheMemoryD[Linea].setModify(false);
+                }
+                
+                return CacheMemoryD[Linea].recoverWord(Palabra);
+            }
+        }else{
+            int firstLine = Etiqueta * 8;
+            int count = 0;
+
+            for (int j = firstLine; j < firstLine + 8; j++) {
+                CacheMemoryD[Linea].getPalabra()[count] = RAM[j];
+                count++;
+            }
+            
+            CacheMemoryD[Linea].setEtiqueta(Etiqueta);
+            CacheMemoryD[Linea].setValid(true);
+            CacheMemoryD[Linea].setModify(false);
+
+            return CacheMemoryD[Linea].recoverWord(Palabra);
+        }
     }
 
     int CacheAsociativoPorConjunto(int i) {
