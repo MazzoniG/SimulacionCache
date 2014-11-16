@@ -37,7 +37,7 @@ public class SimulacionCache {
             Logger.getLogger(SimulacionCache.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        System.out.println("IGNORE" + CacheDirecta(4095));
+        System.out.println("IGNORE" + CacheAsociativa(4095));
 
     }
 
@@ -70,7 +70,7 @@ public class SimulacionCache {
                         EscribirCacheDirecta(j, CacheMemoryD[Linea].getPalabra()[count]);
                         count++;
                     }
-                    
+
                     CacheMemoryD[Linea].setValid(true);
                     CacheMemoryD[Linea].setModify(false);
 
@@ -114,7 +114,26 @@ public class SimulacionCache {
         }
     }
 
-    int CacheAsociativo(int i) {
+    static int CacheAsociativa(int i) {
+
+        int Etiqueta = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(0, 9));
+        int Palabra = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12), 2);
+        int Linea = -1;
+
+        for (int k = 0; k < CacheMemoryD.length; k++) {
+            if(!CacheMemoryD[k].isValid()){
+                
+            }
+        }
+        
+        for (int j = 0; j < CacheMemoryD.length; j++) {
+            if (CacheMemoryD[j].getEtiqueta() == Etiqueta) {
+                Linea = j;
+                break;
+            } else {
+
+            }
+        }
         return i;
     }
 
@@ -144,7 +163,7 @@ public class SimulacionCache {
                     //Modifique aquí porque nos daría recursión infinita.
                     int count = 0;
                     for (int j = firstLine; j < firstLine + 8; j++) {
-                        RAM[j]= CacheMemoryD[Linea].getPalabra()[count];
+                        RAM[j] = CacheMemoryD[Linea].getPalabra()[count];
                         count++;
                     }
                     CacheDirecta(i);
