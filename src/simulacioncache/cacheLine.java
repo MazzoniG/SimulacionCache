@@ -13,7 +13,14 @@ public class cacheLine {
     int Etiqueta;
     boolean Valid;
     boolean Modify;
-    int[] Palabra = new int[8];
+    int[] Palabra;
+
+    public cacheLine() {
+        Etiqueta = -1;
+        Valid = false;
+        Modify = false;
+        Palabra = new int[8];
+    }
 
     public cacheLine(int Etiqueta, boolean Valid, boolean Modify) {
         this.Etiqueta = Etiqueta;
