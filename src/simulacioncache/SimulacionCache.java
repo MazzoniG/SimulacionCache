@@ -38,6 +38,7 @@ public class SimulacionCache {
 
         //System.out.println("IGNORE" + CacheAsociativa(4095));
         //System.out.println(Integer.toBinaryString(0x1000 | 6).substring(1).substring(9, 12).concat(Integer.toBinaryString(0x1000 | 63).substring(1).substring(6,12)));
+        
     }
 
     //Metodos de Lectura & Escritura
@@ -145,8 +146,8 @@ public class SimulacionCache {
                 return CacheMemoryD[Linea].recoverWord(Palabra);
             } else {
                 if (CacheMemoryD[Linea].isModify()) {
-                    int firstLine = Etiqueta * 8;
-                    int firstLineM = CacheMemoryD[Linea].getEtiqueta() * 8;
+                    int firstLine = Integer.parseInt(Integer.toString(Etiqueta),2) * 8;
+                    int firstLineM = Integer.parseInt(Integer.toHexString(CacheMemoryD[Linea].getEtiqueta()), 2) * 8;
                     int count = 0;
 
                     for (int j = firstLineM; j < firstLineM + 8; j++) {
@@ -166,7 +167,7 @@ public class SimulacionCache {
 
                     return CacheMemoryD[Linea].recoverWord(Palabra);
                 } else {
-                    int firstLine = Etiqueta * 8;
+                    int firstLine = Integer.parseInt(Integer.toString(Etiqueta),2) * 8;
                     int count = 0;
 
                     count = 0;
@@ -183,7 +184,7 @@ public class SimulacionCache {
                 return CacheMemoryD[Linea].recoverWord(Palabra);
             }
         } else {
-            int firstLine = Etiqueta * 8;
+            int firstLine = Integer.parseInt(Integer.toString(Etiqueta),2) * 8;
             int count = 0;
 
             for (int j = firstLine; j < firstLine + 8; j++) {
@@ -200,6 +201,9 @@ public class SimulacionCache {
     }
 
     int CacheAsociativoPorConjunto(int i) {
+        int Etiqueta = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(0, 3));
+        int Conjunto = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(3, 9), 2);
+        int Palabra = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12), 2);
         return i;
     }
 
@@ -283,8 +287,8 @@ public class SimulacionCache {
                 CacheMemoryD[Linea].getPalabra()[Palabra] = v;
             }else{
                 if (CacheMemoryD[Linea].isModify()) {
-                    int firstLine = Etiqueta * 8;
-                    int firstLineM = CacheMemoryD[Linea].getEtiqueta() * 8;
+                    int firstLine = Integer.parseInt(Integer.toString(Etiqueta),2) * 8;
+                    int firstLineM = Integer.parseInt(Integer.toHexString(CacheMemoryD[Linea].getEtiqueta()), 2) * 8;
                     int count = 0;
 
                     for (int j = firstLineM; j < firstLineM + 8; j++) {
@@ -308,7 +312,7 @@ public class SimulacionCache {
                 CacheMemoryD[Linea].setEtiqueta(Etiqueta);
             }
         } else {
-            int firstLine = Etiqueta * 8;
+            int firstLine = Integer.parseInt(Integer.toString(Etiqueta),2) * 8;
             int count = 0;
             
             for (int j = firstLine; j < firstLine + 8; j++) {
