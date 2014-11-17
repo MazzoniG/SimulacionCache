@@ -14,7 +14,6 @@ public class SimulacionCache {
     static int[] Cache = new int[512];
     static int[] Bloque = new int[8];
     static cacheLine[] CacheMemoryD = new cacheLine[64];
-    static int[] CacheAsociativa = new int[64];
     //static int[] Conjunto = new int[4];
     static BufferedReader reader;
 
@@ -67,12 +66,20 @@ public class SimulacionCache {
                     int count = 0;
 
                     int BloqueC = Integer.parseInt(Integer.toBinaryString(0x1000 | CacheMemoryD[Linea].getEtiqueta()).substring(1).substring(9, 12).concat(Integer.toBinaryString(0x1000 | Linea).substring(1).substring(6, 12)));
-
+                    int firstLineM = BloqueC*8;
+                    
+                    for (int j = firstLineM; j < firstLineM + 8; j++) {
+                        RAM[j]= CacheMemoryD[Linea].getPalabra()[count];
+                        count++;
+                    }
+                    
+                    count = 0;
                     for (int j = firstLine; j < firstLine + 8; j++) {
-                        EscribirCacheDirecta(j, CacheMemoryD[Linea].getPalabra()[count]);
+                        CacheMemoryD[Linea].getPalabra()[count]= RAM[j];
                         count++;
                     }
 
+                    CacheMemoryD[Linea].setEtiqueta(Etiqueta);
                     CacheMemoryD[Linea].setValid(true);
                     CacheMemoryD[Linea].setModify(false);
 
@@ -215,13 +222,22 @@ public class SimulacionCache {
                 CacheMemoryD[Linea].getPalabra()[Palabra] = v;
             } else {
                 if (CacheMemoryD[Linea].isModify()) {
-                    //Modifique aquí porque nos daría recursión infinita.
                     int count = 0;
-                    for (int j = firstLine; j < firstLine + 8; j++) {
+
+                    int BloqueC = Integer.parseInt(Integer.toBinaryString(0x1000 | CacheMemoryD[Linea].getEtiqueta()).substring(1).substring(9, 12).concat(Integer.toBinaryString(0x1000 | Linea).substring(1).substring(6, 12)));
+                    int firstLineM = BloqueC * 8;
+
+                    for (int j = firstLineM; j < firstLineM + 8; j++) {
                         RAM[j] = CacheMemoryD[Linea].getPalabra()[count];
                         count++;
                     }
-                    CacheDirecta(i);
+                    
+                    count = 0;
+                    for (int j = firstLine; j < firstLine + 8; j++) {
+                        CacheMemoryD[Linea].getPalabra()[count] = RAM[j];
+                        count++;
+                    }
+                    
                     CacheMemoryD[Linea].setValid(true);
                     CacheMemoryD[Linea].setModify(true);
                     CacheMemoryD[Linea].getPalabra()[Palabra] = v;
@@ -229,10 +245,16 @@ public class SimulacionCache {
                     CacheMemoryD[Linea].setModify(true);
                     CacheMemoryD[Linea].getPalabra()[Palabra] = v;
                 }
+                CacheMemoryD[Linea].setEtiqueta(Etiqueta);
             }
-
         } else {
-            CacheDirecta(i);
+             int count = 0;
+            
+            for (int j = firstLine; j < firstLine + 8; j++) {
+                CacheMemoryD[Linea].getPalabra()[count] = RAM[j];
+                count++;
+            }
+            CacheMemoryD[Linea].setEtiqueta(Etiqueta);
             CacheMemoryD[Linea].setValid(true);
             CacheMemoryD[Linea].setModify(true);
             CacheMemoryD[Linea].getPalabra()[Palabra] = v;
