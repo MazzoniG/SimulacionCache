@@ -16,7 +16,7 @@ public class cacheLine {
     int[] Palabra;
 
     public cacheLine() {
-        Etiqueta = -1;
+        Etiqueta = 0b10111011100000;
         Valid = false;
         Modify = false;
         Palabra = new int[8];

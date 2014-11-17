@@ -38,7 +38,7 @@ public class SimulacionCache {
 
         //System.out.println("IGNORE" + CacheAsociativa(4095));
         //System.out.println(Integer.toBinaryString(0x1000 | 6).substring(1).substring(9, 12).concat(Integer.toBinaryString(0x1000 | 63).substring(1).substring(6,12)));
-        
+    
     }
 
     //Metodos de Lectura & Escritura
@@ -201,10 +201,79 @@ public class SimulacionCache {
     }
 
     int CacheAsociativoPorConjunto(int i) {
-        int Etiqueta = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(0, 3));
-        int Conjunto = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(3, 9), 2);
+        int Etiqueta = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(0, 5));
+        int Conjunto = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(5, 9), 2);
         int Palabra = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12), 2);
-        return i;
+        
+        int Linea = -1;
+        for (int j = 0; j < Conjuntos[Conjunto].getLines().length; j++) {
+            if (Conjuntos[Conjunto].getLines()[j].getEtiqueta()== Etiqueta) {
+                Linea = j;
+            }
+        }
+        
+        if (Linea == -1) {
+            Linea = Conjuntos[Conjunto].getNextLine();
+        }
+        
+        if (Conjuntos[Conjunto].getLines()[Linea].isValid()) {
+            if (Conjuntos[Conjunto].getLines()[Linea].getEtiqueta()==Etiqueta) {
+                return Conjuntos[Conjunto].getLines()[Linea].getPalabra()[Palabra];
+            }else {
+                if (Conjuntos[Conjunto].getLines()[Linea].isModify()) {
+                    String SBloqueN = Integer.toString(Conjuntos[Conjunto].getLines()[Linea].getEtiqueta()) + Integer.toBinaryString(Conjunto);
+                    int firstLineN = Integer.parseInt(SBloqueN, 2) * 8;
+                    int count = 0;
+                    
+                    for (int j = firstLineN; j < firstLineN + 8; j++) {
+                        RAM[j]= Conjuntos[Conjunto].getLines()[Linea].getPalabra()[count];
+                        count++;
+                    }
+                    
+                    String SBloque = Integer.toString(Etiqueta) + Integer.toBinaryString(Conjunto);
+                    int firstLine = Integer.parseInt(SBloque, 2) * 8;
+                    
+                    for (int j = firstLine; j < firstLine + 8; j++) {
+                        Conjuntos[Conjunto].getLines()[Linea].getPalabra()[count] = RAM[j];
+                        count++;
+                    }
+                    
+                    Conjuntos[Conjunto].getLines()[Linea].setValid(true);
+                    Conjuntos[Conjunto].getLines()[Linea].setModify(false);
+
+                } else {
+                    String SBloque = Integer.toString(Etiqueta) + Integer.toBinaryString(Conjunto);
+                    int firstLine = Integer.parseInt(SBloque, 2) * 8;
+                    int count = 0;
+
+                    for (int j = firstLine; j < firstLine + 8; j++) {
+                        Conjuntos[Conjunto].getLines()[Linea].getPalabra()[count] = RAM[j];
+                        count++;
+                    }
+
+                    Conjuntos[Conjunto].getLines()[Linea].setValid(true);
+                    Conjuntos[Conjunto].getLines()[Linea].setModify(false);
+
+                }
+                Conjuntos[Conjunto].getLines()[Linea].setEtiqueta(Etiqueta);
+                return Conjuntos[Conjunto].getLines()[Linea].getPalabra()[Palabra];
+            }
+        } else {
+            String SBloque = Integer.toString(Etiqueta) + Integer.toBinaryString(Conjunto);
+            int firstLine = Integer.parseInt(SBloque, 2) * 8;
+            int count = 0;
+            
+            for (int j = firstLine; j < firstLine+8; j++) {
+                Conjuntos[Conjunto].getLines()[Linea].getPalabra()[count]= RAM[j];
+                count++;
+            }
+            
+            Conjuntos[Conjunto].getLines()[Linea].setEtiqueta(Etiqueta);
+            Conjuntos[Conjunto].getLines()[Linea].setValid(true);
+            Conjuntos[Conjunto].getLines()[Linea].setModify(false);
+            
+            return Conjuntos[Conjunto].getLines()[Linea].getPalabra()[Palabra];
+        }
     }
 
     void Escribir(int i, int tipo) {
