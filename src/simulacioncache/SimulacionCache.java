@@ -14,7 +14,7 @@ public class SimulacionCache {
     static int[] Cache = new int[512];
     static int[] Bloque = new int[8];
     static cacheLine[] CacheMemoryD = new cacheLine[64];
-    //static int[] Conjunto = new int[4];
+    static CacheLineSet[] Conjuntos = new CacheLineSet[16];
     static BufferedReader reader;
 
     public static void main(String[] args) {
