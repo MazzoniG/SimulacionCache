@@ -18,6 +18,12 @@ public class SimulacionCache {
     static BufferedReader reader;
 
     public static void main(String[] args) {
+        for (int i = 0; i < CacheMemoryD.length; i++) {
+            CacheMemoryD[i]= new cacheLine();
+        }
+        for (int i = 0; i < Conjuntos.length; i++) {
+            Conjuntos[i]= new CacheLineSet();
+        }
 
         try {
 
@@ -112,7 +118,7 @@ public class SimulacionCache {
 
                     int BloqueC = Integer.parseInt(Integer.toBinaryString(0x1000 | CacheMemoryD[Linea].getEtiqueta()).substring(1).substring(9, 12).concat(Integer.toBinaryString(0x1000 | Linea).substring(1).substring(6, 12)));
                     int firstLineM = BloqueC * 8;
-
+                    
                     for (int j = firstLineM; j < firstLineM + 8; j++) {
                         RAM[j] = CacheMemoryD[Linea].getPalabra()[count];
                         count++;

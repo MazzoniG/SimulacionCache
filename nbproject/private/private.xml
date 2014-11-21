@@ -5,13 +5,15 @@
             <url>src/simulacioncache/SimulacionCache.java</url>
             <bookmark id="2">
                 <name/>
-                <line>338</line>
+                <line>344</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/OWNER/Documents/NetBeansProjects/SimulacionCache/src/simulacioncache/CacheLineSet.java</file>
+            <file>file:/C:/Users/OWNER/Documents/NetBeansProjects/SimulacionCache/src/simulacioncache/cacheLine.java</file>
             <file>file:/C:/Users/OWNER/Documents/NetBeansProjects/SimulacionCache/src/simulacioncache/SimulacionCache.java</file>
         </group>
     </open-files>

@@ -11,15 +11,15 @@ import java.util.*;
 public class cacheLine {
     
     int Etiqueta;
-    boolean Valid =  false;
+    boolean Valid;
     boolean Modify;
     int[] Palabra;
 
     public cacheLine() {
-        Etiqueta = 0b10111011100000;
-        Valid = false;
-        Modify = false;
-        Palabra = new int[8];
+        this.Etiqueta = 0b10111011100000;
+        this.Valid = false;
+        this.Modify = false;
+        this.Palabra = new int[8];
     }
 
     public cacheLine(int Etiqueta, boolean Valid, boolean Modify) {

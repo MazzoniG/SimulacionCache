@@ -15,6 +15,9 @@ public class CacheLineSet {
     
     public CacheLineSet() {
         Lines = new cacheLine[4];
+        for (int i = 0; i < Lines.length; i++) {
+            Lines[i]= new cacheLine();
+        }
         nextLine =0;
     }
     
