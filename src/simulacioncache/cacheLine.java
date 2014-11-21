@@ -11,7 +11,7 @@ import java.util.*;
 public class cacheLine {
     
     int Etiqueta;
-    boolean Valid;
+    boolean Valid =  false;
     boolean Modify;
     int[] Palabra;
 
@@ -60,8 +60,6 @@ public class cacheLine {
         return Palabra;
     }
    
-    
-    
     int recoverWord(int i){
         return Palabra[i];
     }
