@@ -42,7 +42,7 @@ public class SimulacionCache {
             Logger.getLogger(SimulacionCache.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        int Tipo = 1;
+        int Tipo = 2;
 
         for (int i = 0; i < 4094; i++) {
             for (int j = i + 1; j < 4095; j++) {
@@ -198,9 +198,10 @@ public class SimulacionCache {
             } else {
                 if (CacheMemoryD[Linea].isModify()) {
                     int firstLine = Integer.parseInt(Integer.toString(Etiqueta), 2) * 8;
-                    int firstLineM = Integer.parseInt(Integer.toHexString(CacheMemoryD[Linea].getEtiqueta()), 2) * 8;
+                    int firstLineM = Integer.parseInt(Integer.toString(CacheMemoryD[Linea].getEtiqueta()),2) * 8;
                     int count = 0;
 
+                    
                     for (int j = firstLineM; j < firstLineM + 8; j++) {
                         RAM[j] = CacheMemoryD[Linea].getPalabra()[count];
                         count++;
