@@ -16,13 +16,14 @@ public class SimulacionCache {
     static cacheLine[] CacheMemoryD = new cacheLine[64];
     static CacheLineSet[] Conjuntos = new CacheLineSet[16];
     static BufferedReader reader;
+    static double Time = 0;
 
     public static void main(String[] args) {
         for (int i = 0; i < CacheMemoryD.length; i++) {
-            CacheMemoryD[i]= new cacheLine();
+            CacheMemoryD[i] = new cacheLine();
         }
         for (int i = 0; i < Conjuntos.length; i++) {
-            Conjuntos[i]= new CacheLineSet();
+            Conjuntos[i] = new CacheLineSet();
         }
 
         try {
@@ -42,7 +43,7 @@ public class SimulacionCache {
             Logger.getLogger(SimulacionCache.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        int Tipo = 2;
+        int Tipo = 1;
 
         for (int i = 0; i < 4094; i++) {
             for (int j = i + 1; j < 4095; j++) {
@@ -56,8 +57,8 @@ public class SimulacionCache {
                 }
             }
         }
-       
-        
+
+        System.out.println(Time);
         //System.out.println("IGNORE" + CacheAsociativa(4095));
         //System.out.println(Integer.toBinaryString(0x1000 | 6).substring(1).substring(9, 12).concat(Integer.toBinaryString(0x1000 | 63).substring(1).substring(6,12)));
     }
@@ -94,10 +95,12 @@ public class SimulacionCache {
     }
 
     static int NoCache(int i) {
+        Time += 0.1;
         return RAM[i];
     }
 
     static void EscribirNoCache(int i, int v) {
+        Time += 0.1;
         RAM[i] = v;
     }
 
@@ -109,6 +112,7 @@ public class SimulacionCache {
 
         if (CacheMemoryD[Linea].isValid()) {
             if (Etiqueta == CacheMemoryD[Linea].getEtiqueta()) {
+                Time += 0.01;
                 return CacheMemoryD[Linea].recoverWord(Palabra);
             } else {
                 if (CacheMemoryD[Linea].isModify()) {
@@ -116,12 +120,12 @@ public class SimulacionCache {
                     int Bloque = i / 8;
                     int firstLine = Bloque * 8;
                     int count = 0;
-                    
+
                     System.out.println();
 
-                    int BloqueC = Integer.parseInt(Integer.toBinaryString(0x1000 | CacheMemoryD[Linea].getEtiqueta()).substring(1).substring(9, 12).concat(Integer.toBinaryString(0x1000 | Linea).substring(1).substring(6, 12)),2);
+                    int BloqueC = Integer.parseInt(Integer.toBinaryString(0x1000 | CacheMemoryD[Linea].getEtiqueta()).substring(1).substring(9, 12).concat(Integer.toBinaryString(0x1000 | Linea).substring(1).substring(6, 12)), 2);
                     int firstLineM = BloqueC * 8;
-                    
+
                     for (int j = firstLineM; j < firstLineM + 8; j++) {
                         RAM[j] = CacheMemoryD[Linea].getPalabra()[count];
                         count++;
@@ -136,6 +140,7 @@ public class SimulacionCache {
                     CacheMemoryD[Linea].setValid(true);
                     CacheMemoryD[Linea].setModify(false);
 
+                    Time += 0.66 + 0.66 + 0.01;
                     return CacheMemoryD[Linea].recoverWord(Palabra);
 
                 } else {
@@ -153,6 +158,7 @@ public class SimulacionCache {
                     }
                 }
                 CacheMemoryD[Linea].setEtiqueta(Etiqueta);
+                Time += 0.1 + 0.01;
                 return CacheMemoryD[Linea].recoverWord(Palabra);
             }
 
@@ -171,6 +177,7 @@ public class SimulacionCache {
                 count++;
             }
 
+            Time += 0.1 + 0.01;
             return CacheMemoryD[Linea].recoverWord(Palabra);
         }
     }
@@ -194,14 +201,14 @@ public class SimulacionCache {
 
         if (CacheMemoryD[Linea].isValid()) {
             if (CacheMemoryD[Linea].getEtiqueta() == Etiqueta) {
+                Time += 0.01;
                 return CacheMemoryD[Linea].recoverWord(Palabra);
             } else {
                 if (CacheMemoryD[Linea].isModify()) {
                     int firstLine = Integer.parseInt(Integer.toString(Etiqueta), 2) * 8;
-                    int firstLineM = Integer.parseInt(Integer.toString(CacheMemoryD[Linea].getEtiqueta()),2) * 8;
+                    int firstLineM = Integer.parseInt(Integer.toString(CacheMemoryD[Linea].getEtiqueta()), 2) * 8;
                     int count = 0;
 
-                    
                     for (int j = firstLineM; j < firstLineM + 8; j++) {
                         RAM[j] = CacheMemoryD[Linea].getPalabra()[count];
                         count++;
@@ -215,6 +222,7 @@ public class SimulacionCache {
 
                     CacheMemoryD[Linea].setValid(true);
                     CacheMemoryD[Linea].setModify(false);
+                    Time += 0.75;
 
                 } else {
                     int firstLine = Integer.parseInt(Integer.toString(Etiqueta), 2) * 8;
@@ -231,6 +239,7 @@ public class SimulacionCache {
                 }
 
                 CacheMemoryD[Linea].setEtiqueta(Etiqueta);
+                Time += 0.66;
                 return CacheMemoryD[Linea].recoverWord(Palabra);
             }
         } else {
@@ -245,7 +254,7 @@ public class SimulacionCache {
             CacheMemoryD[Linea].setEtiqueta(Etiqueta);
             CacheMemoryD[Linea].setValid(true);
             CacheMemoryD[Linea].setModify(false);
-
+            Time += 0.66;
             return CacheMemoryD[Linea].recoverWord(Palabra);
         }
     }
@@ -268,6 +277,7 @@ public class SimulacionCache {
 
         if (Conjuntos[Conjunto].getLines()[Linea].isValid()) {
             if (Conjuntos[Conjunto].getLines()[Linea].getEtiqueta() == Etiqueta) {
+                Time += 0.01;
                 return Conjuntos[Conjunto].getLines()[Linea].getPalabra()[Palabra];
             } else {
                 if (Conjuntos[Conjunto].getLines()[Linea].isModify()) {
@@ -289,6 +299,7 @@ public class SimulacionCache {
                         count++;
                     }
 
+                    Time += 0.75;
                     Conjuntos[Conjunto].getLines()[Linea].setValid(true);
                     Conjuntos[Conjunto].getLines()[Linea].setModify(false);
 
@@ -302,6 +313,7 @@ public class SimulacionCache {
                         count++;
                     }
 
+                    Time += 0.66;
                     Conjuntos[Conjunto].getLines()[Linea].setValid(true);
                     Conjuntos[Conjunto].getLines()[Linea].setModify(false);
 
@@ -323,6 +335,7 @@ public class SimulacionCache {
             Conjuntos[Conjunto].getLines()[Linea].setValid(true);
             Conjuntos[Conjunto].getLines()[Linea].setModify(false);
 
+            Time += 0.66;
             return Conjuntos[Conjunto].getLines()[Linea].getPalabra()[Palabra];
         }
     }
@@ -340,13 +353,13 @@ public class SimulacionCache {
             if (Etiqueta == CacheMemoryD[Linea].getEtiqueta()) {
                 CacheMemoryD[Linea].setModify(true);
                 CacheMemoryD[Linea].getPalabra()[Palabra] = v;
+                Time += 0.01;
             } else {
                 if (CacheMemoryD[Linea].isModify()) {
                     int count = 0;
 
                     //int BloqueC = Integer.parseInt(Integer.toBinaryString(0x1000 | CacheMemoryD[Linea].getEtiqueta()).substring(1).substring(9, 12).concat(Integer.toBinaryString(0x1000 | Linea).substring(1).substring(6, 12)));
                     //int firstLineM = BloqueC * 8;
-                    
                     String SBloque = Integer.toString(CacheMemoryD[Linea].getEtiqueta()) + Integer.toBinaryString(Linea);
                     int firstLineM = Integer.parseInt(SBloque, 2) * 8;
 
@@ -361,6 +374,7 @@ public class SimulacionCache {
                         count++;
                     }
 
+                    Time += 0.66 + 0.66 + 0.01;
                     CacheMemoryD[Linea].setModify(true);
                 } else {
 
@@ -370,8 +384,8 @@ public class SimulacionCache {
                         count++;
                     }
 
+                    Time += 0.1 + 0.01;
                     CacheMemoryD[Linea].setModify(true);
-
                 }
                 CacheMemoryD[Linea].setEtiqueta(Etiqueta);
                 CacheMemoryD[Linea].getPalabra()[Palabra] = v;
@@ -387,6 +401,7 @@ public class SimulacionCache {
             CacheMemoryD[Linea].setValid(true);
             CacheMemoryD[Linea].setModify(true);
             CacheMemoryD[Linea].getPalabra()[Palabra] = v;
+            Time += 0.01 + 0.1;
         }
 
     }
@@ -410,6 +425,7 @@ public class SimulacionCache {
             if (CacheMemoryD[Linea].getEtiqueta() == Etiqueta) {
                 CacheMemoryD[Linea].setModify(true);
                 CacheMemoryD[Linea].getPalabra()[Palabra] = v;
+                Time += 0.01;
             } else {
                 if (CacheMemoryD[Linea].isModify()) {
                     int firstLine = Integer.parseInt(Integer.toString(Etiqueta), 2) * 8;
@@ -427,6 +443,7 @@ public class SimulacionCache {
                         count++;
                     }
 
+                    Time += 0.75;
                     CacheMemoryD[Linea].setValid(true);
                     CacheMemoryD[Linea].setModify(true);
 
@@ -438,6 +455,7 @@ public class SimulacionCache {
                         count++;
                     }
 
+                    Time += 0.66;
                     CacheMemoryD[Linea].setModify(true);
                 }
                 CacheMemoryD[Linea].setEtiqueta(Etiqueta);
@@ -456,6 +474,7 @@ public class SimulacionCache {
             CacheMemoryD[Linea].setValid(true);
             CacheMemoryD[Linea].setModify(true);
             CacheMemoryD[Linea].getPalabra()[Palabra] = v;
+            Time += 0.66;
         }
     }
 
@@ -479,6 +498,7 @@ public class SimulacionCache {
             if (Conjuntos[Conjunto].getLines()[Linea].getEtiqueta() == Etiqueta) {
                 Conjuntos[Conjunto].getLines()[Linea].setModify(true);
                 Conjuntos[Conjunto].getLines()[Linea].getPalabra()[Palabra] = v;
+                Time += 0.01;
             } else {
                 if (Conjuntos[Conjunto].getLines()[Linea].isModify()) {
                     String SBloqueN = Integer.toString(Conjuntos[Conjunto].getLines()[Linea].getEtiqueta()) + Integer.toBinaryString(Conjunto);
@@ -499,6 +519,7 @@ public class SimulacionCache {
                         count++;
                     }
 
+                    Time += 0.75;
                     Conjuntos[Conjunto].getLines()[Linea].setValid(true);
                     Conjuntos[Conjunto].getLines()[Linea].setModify(true);
 
@@ -512,6 +533,7 @@ public class SimulacionCache {
                         count++;
                     }
 
+                    Time += 0.66;
                     Conjuntos[Conjunto].getLines()[Linea].setValid(true);
                     Conjuntos[Conjunto].getLines()[Linea].setModify(true);
 
@@ -529,11 +551,12 @@ public class SimulacionCache {
                 count++;
             }
 
+            Time += 0.66;
             Conjuntos[Conjunto].getLines()[Linea].setEtiqueta(Etiqueta);
             Conjuntos[Conjunto].getLines()[Linea].setValid(true);
             Conjuntos[Conjunto].getLines()[Linea].setModify(true);
-
             Conjuntos[Conjunto].getLines()[Linea].getPalabra()[Palabra] = v;
+            
         }
     }
 }
