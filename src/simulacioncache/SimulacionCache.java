@@ -4,9 +4,10 @@ package simulacioncache;
  *
  * @author Guillermo E. Mazzoni Juan C. Flores
  */
-import java.util.*;
 import java.io.*;
+import java.util.*;
 import java.util.logging.*;
+import javax.swing.JOptionPane;
 
 public class SimulacionCache {
 
@@ -43,7 +44,11 @@ public class SimulacionCache {
             Logger.getLogger(SimulacionCache.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        int Tipo = 1;
+        int Tipo = Integer.parseInt(JOptionPane.showInputDialog(null, "Seleccione su opcion: \n"
+                + "    1. Cache Directa \n"
+                + "    2. Cache Asociativa \n"
+                + "    3. Cache Asociativa Por Conjunto \n"
+                + "    4. Sin Cache \n"));
 
         for (int i = 0; i < 4094; i++) {
             for (int j = i + 1; j < 4095; j++) {
@@ -58,9 +63,42 @@ public class SimulacionCache {
             }
         }
 
+        /*
+         //Prueba Escritorio
+         int TIPO = 1;
+         Escribir(TIPO, 100, 10);
+         Escribir(TIPO, 101, 13);
+         Escribir(TIPO, 102, 21);
+         Escribir(TIPO, 103, 11);
+         Escribir(TIPO, 104, 67);
+         Escribir(TIPO, 105, 43);
+         Escribir(TIPO, 106, 9);
+         Escribir(TIPO, 107, 11);
+         Escribir(TIPO, 108, 19);
+         Escribir(TIPO, 109, 23);
+         Escribir(TIPO, 110, 32);
+         Escribir(TIPO, 111, 54);
+         Escribir(TIPO, 112, 98);
+         Escribir(TIPO, 113, 7);
+         Escribir(TIPO, 114, 13);
+         Escribir(TIPO, 115, 1);
+         int Menor = Leer(TIPO, 100);
+         int Mayor = Menor;
+
+         int K = 0;
+
+         for (int i = 101; i <= 115; i++) {
+         K++;
+         Escribir(TIPO, 615, K);
+         if (Leer(TIPO, i) < Menor) {
+         Menor = Leer(TIPO, i);
+         if (Leer(TIPO, i) > Mayor) {
+         Mayor = Leer(TIPO, i);
+         }
+
+         }
+         } */
         System.out.println(Time);
-        //System.out.println("IGNORE" + CacheAsociativa(4095));
-        //System.out.println(Integer.toBinaryString(0x1000 | 6).substring(1).substring(9, 12).concat(Integer.toBinaryString(0x1000 | 63).substring(1).substring(6,12)));
     }
 
     //Metodos de Lectura & Escritura
@@ -556,7 +594,7 @@ public class SimulacionCache {
             Conjuntos[Conjunto].getLines()[Linea].setValid(true);
             Conjuntos[Conjunto].getLines()[Linea].setModify(true);
             Conjuntos[Conjunto].getLines()[Linea].getPalabra()[Palabra] = v;
-            
+
         }
     }
 }
