@@ -98,7 +98,9 @@ public class SimulacionCache {
 
          }
          } */
+        
         System.out.println(Time);
+        JOptionPane.showMessageDialog(null, "El tiempo es:  " + Time, "Resultado", JOptionPane.INFORMATION_MESSAGE);
     }
 
     //Metodos de Lectura & Escritura
