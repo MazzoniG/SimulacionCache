@@ -17,6 +17,7 @@ public class SimulacionCache {
     static cacheLine[] CacheMemoryD = new cacheLine[64];
     static CacheLineSet[] Conjuntos = new CacheLineSet[16];
     static BufferedReader reader;
+    static LRU leastRecentlyUsed = new LRU();
     static double Time = 0;
 
     public static void main(String[] args) {
@@ -43,6 +44,7 @@ public class SimulacionCache {
         } catch (Exception ex) {
             Logger.getLogger(SimulacionCache.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
 
         int Tipo = Integer.parseInt(JOptionPane.showInputDialog(null, "Seleccione su opcion: \n"
                 + "    1. Cache Directa \n"
@@ -226,18 +228,8 @@ public class SimulacionCache {
 
         int Etiqueta = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(0, 9));
         int Palabra = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12), 2);
-        int Linea = -1;
+        int Linea = leastRecentlyUsed.consult(Integer.parseInt(Integer.toBinaryString(Etiqueta),2));
 
-        for (int j = 0; j < CacheMemoryD.length; j++) {
-            if (CacheMemoryD[j].getEtiqueta() == Etiqueta) {
-                Linea = j;
-                break;
-            }
-        }
-        if (Linea == -1) {
-            Random r = new Random();
-            Linea = r.nextInt(64);
-        }
 
         if (CacheMemoryD[Linea].isValid()) {
             if (CacheMemoryD[Linea].getEtiqueta() == Etiqueta) {
@@ -449,18 +441,8 @@ public class SimulacionCache {
     static void EscribirCacheAsociativa(int i, int v) {
         int Etiqueta = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(0, 9));
         int Palabra = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12), 2);
-        int Linea = -1;
+        int Linea = leastRecentlyUsed.consult(Integer.parseInt(Integer.toBinaryString(Etiqueta),2));;
 
-        for (int j = 0; j < CacheMemoryD.length; j++) {
-            if (CacheMemoryD[j].getEtiqueta() == Etiqueta) {
-                Linea = j;
-                break;
-            }
-        }
-        if (Linea == -1) {
-            Random r = new Random();
-            Linea = r.nextInt(64);
-        }
         if (CacheMemoryD[Linea].isValid()) {
             if (CacheMemoryD[Linea].getEtiqueta() == Etiqueta) {
                 CacheMemoryD[Linea].setModify(true);
@@ -469,7 +451,7 @@ public class SimulacionCache {
             } else {
                 if (CacheMemoryD[Linea].isModify()) {
                     int firstLine = Integer.parseInt(Integer.toString(Etiqueta), 2) * 8;
-                    int firstLineM = Integer.parseInt(Integer.toBinaryString(CacheMemoryD[Linea].getEtiqueta()), 2) * 8;
+                    int firstLineM = Integer.parseInt(Integer.toString(CacheMemoryD[Linea].getEtiqueta()), 2) * 8;
                     int count = 0;
 
                     for (int j = firstLineM; j < firstLineM + 8; j++) {
