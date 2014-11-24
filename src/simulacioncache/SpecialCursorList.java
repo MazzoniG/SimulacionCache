@@ -255,21 +255,22 @@ public class SpecialCursorList {
     }
     
     public void floatToSurface(int toFloat){
-        int prev = array[head].getPrev();
-        int next = array[head].getNext();
-        array[head].setPrev(array[toFloat].getPrev());
-        array[head].setNext(array[toFloat].getNext());
-        if (array[toFloat].getPrev() != -1) {
-          array[array[toFloat].getPrev()].setNext(head);   
-        }
-        if (array[toFloat].getNext()==-1) {
-            tail = head;
+        int prev = array[toFloat].getPrev();
+        int next = array[toFloat].getNext();
+        if (head == toFloat) {
+            
         }else{
-            array[array[toFloat].getNext()].setPrev(head);
+            array[prev].setNext(next);
+            if (next == -1) {
+                tail = prev;
+            }else{
+              array[next].setPrev(prev);   
+            }
+            array[head].setPrev(toFloat);
+            array[toFloat].setNext(head);
+            array[toFloat].setPrev(-1);
+            head = toFloat;
         }
-        array[toFloat].setPrev(prev);
-        array[toFloat].setNext(next);
-        head = toFloat;
     }
 
     private boolean isFull() {
