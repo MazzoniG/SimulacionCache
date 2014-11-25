@@ -16,8 +16,10 @@ public class LRU {
      SpecialCursorList list;
      Map<Integer, Integer> tags; // Clave etiqueta, valor LíneaCache.
      Map<Integer, Integer> arrayPos; // Clave LineaCache, Valor Linea del arreglo
+     int ini;
 
     public LRU() {
+        this.ini = 64;
         list =new  SpecialCursorList(64);
         tags = new HashMap<>();
         arrayPos = new HashMap<>();
@@ -28,6 +30,7 @@ public class LRU {
     }
     
     public LRU(int ini) {
+        this.ini= ini;
         list =new  SpecialCursorList(ini);
         tags = new HashMap<>();
         arrayPos = new HashMap<>();
@@ -53,5 +56,11 @@ public class LRU {
             list.floatToSurface(arrayLine);
         }
         return line;
+    }
+    
+    void checkMap(){
+        if (tags.size()==ini) {
+            tags.clear();
+        }
     }
 }

@@ -5,7 +5,6 @@ package simulacioncache;
  * @author Guillermo E. Mazzoni Juan C. Flores
  */
 import java.io.*;
-import java.util.*;
 import java.util.logging.*;
 import javax.swing.JOptionPane;
 
@@ -163,8 +162,6 @@ public class SimulacionCache {
                     int firstLine = Bloque * 8;
                     int count = 0;
 
-                    System.out.println();
-
                     int BloqueC = Integer.parseInt(Integer.toBinaryString(0x1000 | CacheMemoryD[Linea].getEtiqueta()).substring(1).substring(9, 12).concat(Integer.toBinaryString(0x1000 | Linea).substring(1).substring(6, 12)), 2);
                     int firstLineM = BloqueC * 8;
 
@@ -229,7 +226,7 @@ public class SimulacionCache {
         int Etiqueta = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(0, 9));
         int Palabra = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12), 2);
         int Linea = leastRecentlyUsed.consult(Integer.parseInt(Integer.toBinaryString(Etiqueta),2));
-
+        leastRecentlyUsed.checkMap();
 
         if (CacheMemoryD[Linea].isValid()) {
             if (CacheMemoryD[Linea].getEtiqueta() == Etiqueta) {
@@ -441,7 +438,8 @@ public class SimulacionCache {
     static void EscribirCacheAsociativa(int i, int v) {
         int Etiqueta = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(0, 9));
         int Palabra = Integer.parseInt(Integer.toBinaryString(0x1000 | i).substring(1).substring(9, 12), 2);
-        int Linea = leastRecentlyUsed.consult(Integer.parseInt(Integer.toBinaryString(Etiqueta),2));;
+        int Linea = leastRecentlyUsed.consult(Integer.parseInt(Integer.toBinaryString(Etiqueta),2));
+        leastRecentlyUsed.checkMap();
 
         if (CacheMemoryD[Linea].isValid()) {
             if (CacheMemoryD[Linea].getEtiqueta() == Etiqueta) {
