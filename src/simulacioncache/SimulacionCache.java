@@ -2,7 +2,9 @@ package simulacioncache;
 
 /**
  *
- * @author Guillermo E. Mazzoni Juan C. Flores
+ * @author  Juan C. Flores Guillermo E. Mazzoni
+ * 
+ * Este proyecto fue implementado usando LRU para el modo de caché asociativo.
  */
 import java.io.*;
 import java.util.logging.*;
